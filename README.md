@@ -1,6 +1,5 @@
 # User rating web crawler [![CI](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml)
 
-
 Web crawler for scrapping rating from Roku site.
 
 ## Requirements
@@ -67,8 +66,10 @@ docker-compose logs crawler-api
 
 ## Scaling
 
-By default, consumer spawns 5 workers to work on messages - it could be changed inside consumer however also container
-could be scaled up to open new AMQP connections using following method:
+By default, consumer spawns 5 workers to work on messages - it could be changed via `CRAWLER_WORKERS_AMOUNT` env
+variable. container
+
+Also, could be scaled up to open new AMQP connections using following method:
 
 ```shell
 docker-compose up -d --build --scale crawler-worker=<number of containers>
@@ -103,6 +104,19 @@ make test-integration-acceptance
 docker-compose run -v $(pwd)/single.csv:/app/data.csv --rm crawler-client ./web-crawler-client --csv=data.csv
 
 ## Additional information
+
+### Env vars used
+
+| Name         | Description                                      | Default value   |
+|--------------|--------------------------------------------------|-----------------|
+| AMQP_URL | Full connection string to AMQP                   |                 |
+| AMQP_QUEUE_NAME | Queue name                                       | channel_crawler |
+| AMQP_EXCHANGE_NAME | Name od direct exchange                          | urls            |
+| AMQP_ROUTING_KEY | Routing key used to route messages               | channel_url     |
+| DATABASE_DSN | Database DSN                                     ||
+| DATABASE_DB_NAME | Database name used for storing crawled data      | crawler         |
+| GRPC_SERVER_PORT | GRPC API port                                    |                 |
+| CRAWLER_WORKERS_AMOUNT | Amount of workers to spawn inside single process | 5               |
 
 The crawler itself could be polished with
 
