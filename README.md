@@ -67,9 +67,9 @@ docker-compose logs crawler-api
 ## Scaling
 
 By default, consumer spawns 5 workers to work on messages - it could be changed via `CRAWLER_WORKERS_AMOUNT` env
-variable. container
+variable.
 
-Also, could be scaled up to open new AMQP connections using following method:
+Also, container could be scaled up to open new AMQP connections using following method:
 
 ```shell
 docker-compose up -d --build --scale crawler-worker=<number of containers>
