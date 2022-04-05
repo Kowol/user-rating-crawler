@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.9.13-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - web-crawler
+
+  db:
+    build: docker/mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: admin
+    networks:
+      - web-crawler
+
+  crawler-api:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: .
+      target: api
+    ports:
+      - "8454:8454"
+    restart: unless-stopped
+    environment: &crawlerCfg
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      DATABASE_DSN: mongodb://channelCrawler:pass@db:27017/?connect=direct
+      GRPC_SERVER_PORT: 8454
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - web-crawler
+
+  crawler-worker:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: .
+      target: worker
+    restart: unless-stopped
+    environment:
+      <<: *crawlerCfg
+    depends_on:
+      - db
+      - rabbitmq
+    networks:
+      - web-crawler
+
+  crawler-client:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: .
+      target: client
+    command: "echo disabled"
+    environment:
+      <<: *crawlerCfg
+      GRPC_HOST: crawler-api
+    depends_on:
+      - crawler-api
+    networks:
+      - web-crawler
+
+networks:
+  web-crawler:
+    driver: bridge

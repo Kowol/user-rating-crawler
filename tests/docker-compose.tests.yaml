@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.9.13-alpine
+    networks:
+      - test-web-crawler
+
+  db:
+    build: ./mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: admin
+    networks:
+      - test-web-crawler
+
+  fake-channel-server:
+    build: ./fake-channel-server
+    networks:
+      - test-web-crawler
+
+  api:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: ../
+      target: api
+    restart: unless-stopped
+    environment: &serviceCfg
+      FAKE_SITE: http://fake-channel-server
+      AMQP_URL: amqp://guest:guest@rabbitmq:5672
+      DATABASE_DSN: mongodb://channelCrawlerTest:pass@db:27017/?connect=direct
+      DATABASE_DB_NAME: crawlerTest
+      GRPC_SERVER_PORT: 8454
+    depends_on:
+      - rabbitmq
+      - db
+      - fake-channel-server
+    networks:
+      - test-web-crawler
+
+  worker:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: ../
+      target: worker
+    restart: unless-stopped
+    environment:
+      <<: *serviceCfg
+    depends_on:
+      - rabbitmq
+      - db
+    networks:
+      - test-web-crawler
+
+  runner:
+    build:
+      dockerfile: docker/crawler/Dockerfile
+      context: ../
+      target: tester
+    command: "echo disabled"
+    environment:
+      <<: *serviceCfg
+      GRPC_HOST: "api"
+    depends_on:
+      - api
+      - worker
+    networks:
+      - test-web-crawler
+
+networks:
+  test-web-crawler:
+    driver: bridge
