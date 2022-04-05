@@ -6,7 +6,6 @@ Web crawler for scrapping rating from Roku site.
 ## Requirements
 
 * Docker
-* Go 1.18
 
 ## Setup
 
@@ -82,8 +81,10 @@ docker-compose up -d --build --scale crawler-worker=<number of containers>
 This command run only unit tests
 
 ```shell
-make test
+make test-image
 ```
+
+Or optionally `make test` - but it requires GO 1.18
 
 ### Integration and acceptance tests
 
