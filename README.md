@@ -43,11 +43,11 @@ Prepare CSV file in following format. It can contain as many lines as you wish
 | https://channelstore.roku.com/details/d6ff1be180299e8be35ff79f5cc0628d/flickr  |
 
 Run following command (but make sure that docker containers are up and running) or optionally
-replace `$(pwd)/examples/list.csv`
+replace `$(pwd)/_examples/list.csv`
 with path to your CSV file
 
 ```shell
-docker-compose run -v $(pwd)/examples/list.csv:/app/data.csv --rm crawler-client ./web-crawler-client --csv=data.csv
+docker-compose run -v $(pwd)/_examples/list.csv:/app/data.csv --rm crawler-client ./web-crawler-client --csv=data.csv
 ```
 
 ### Logs
