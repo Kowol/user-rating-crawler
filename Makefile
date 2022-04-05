@@ -9,12 +9,12 @@ build:
 	go build -o $(PROJECT_NAME)-worker $(AMQP_WORKER_PATH)
 	go build -o $(PROJECT_NAME)-client $(CLIENT_PATH)
 
-test:
-	go test -short ./...
-
-test-ci:
+test-image:
 	docker build --target tester . -f docker/crawler/Dockerfile -t $(PROJECT_NAME)-test
 	docker run $(PROJECT_NAME)-test
+
+test:
+	go test -short ./...
 
 test-integration-acceptance:
 	./tests/run.sh
