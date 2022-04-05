@@ -122,6 +122,7 @@ The crawler itself could be polished with
 
 * some random delay between calls
 * faking user agent to prevent getting blocked
+* maybe some caching
 * other cool stuff
 
 RabbitMQ UI is available under http://localhost:15672/ (login: guest, password: guest) (here you can monitor all the
