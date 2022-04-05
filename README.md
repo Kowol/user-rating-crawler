@@ -1,6 +1,6 @@
 # User rating web crawler [![CI](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml)
 
-Web crawler for scrapping rating from Roku site.
+Web crawler for scrapping rating from Roku site. It's using headless chromium under the hood to render the full react page - that's the reason why it's a bit slow - but don't worry, we can speed it up by scaling up workers. 
 
 ## Requirements
 
