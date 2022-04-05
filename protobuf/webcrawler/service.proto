@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package webcrawler;
+option go_package = "/webcrawler";
+
+message CrawlerRequest {
+  string url = 1;
+}
+
+message BatchCrawlerRequest {
+  repeated CrawlerRequest urls = 1;
+}
+
+message Empty {
+
+}
+
+service webCrawlerService {
+  rpc Crawl(CrawlerRequest) returns (Empty);
+  rpc CrawlBatch(BatchCrawlerRequest) returns (Empty);
+}
