@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run unit tests
+        run: make test-ci
+
+      - name: Run integration and acceptance tests
+        run: make test-integration-acceptance

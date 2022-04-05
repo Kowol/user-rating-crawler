@@ -12,5 +12,9 @@ build:
 test:
 	go test -short ./...
 
+test-ci:
+	docker build --target tester . -f docker/crawler/Dockerfile -t $(PROJECT_NAME)-test
+	docker run $(PROJECT_NAME)-test
+
 test-integration-acceptance:
 	./tests/run.sh
