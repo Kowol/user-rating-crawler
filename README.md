@@ -1,4 +1,5 @@
-# User rating web crawler
+# User rating web crawler [![CI](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml/badge.svg?branch=main)](https://github.com/Kowol/user-rating-crawler/actions/workflows/main.yaml)
+
 
 Web crawler for scrapping rating from Roku site.
 
