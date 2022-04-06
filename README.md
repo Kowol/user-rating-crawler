@@ -2,6 +2,14 @@
 
 Web crawler for scrapping rating from Roku site. It's using headless chromium under the hood to render the full react page - that's the reason why it's a bit slow - but don't worry, we can speed it up by scaling up workers. 
 
+## Solution description
+
+App providers 2 separate services (two separate binaries - as they share part of codebase and share the domain). But they could be scaled individually
+
+First one is a worker - it's simple RabbitMQ consumer that process the urls.
+
+Second one is a GRPC client - it accepts urls to process and push them to the exchange
+
 ## Requirements
 
 * Docker
@@ -101,11 +109,11 @@ All this stuff it done by using docker that runs the containers required for the
 make test-integration-acceptance
 ```
 
-docker-compose run -v $(pwd)/single.csv:/app/data.csv --rm crawler-client ./web-crawler-client --csv=data.csv
-
 ## Additional information
 
 ### Env vars used
+
+Whole configuration is done via env variables
 
 | Name         | Description                                      | Default value   |
 |--------------|--------------------------------------------------|-----------------|
@@ -118,6 +126,8 @@ docker-compose run -v $(pwd)/single.csv:/app/data.csv --rm crawler-client ./web-
 | GRPC_SERVER_PORT | GRPC API port                                    |                 |
 | CRAWLER_WORKERS_AMOUNT | Amount of workers to spawn inside single process | 5               |
 
+
+### TODO
 The crawler itself could be polished with
 
 * some random delay between calls
@@ -125,8 +135,9 @@ The crawler itself could be polished with
 * maybe some caching
 * other cool stuff
 
+Also, the tracing part is missing - so it will require to generate some traceId with span to control the flow over the services.
+
 RabbitMQ UI is available under http://localhost:15672/ (login: guest, password: guest) (here you can monitor all the
 messages). Currently, DLX is not configured, so failed messages are removed. However, it's not a big deal to redeliver
 failed messages from DLX
 
-Whole configuration is done via env variables 
